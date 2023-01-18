@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "elm-test": "^0.19.1-revision9",
+    "elm-verify-examples": "^5.2.0",
+    "xhr2": "^0.2.1"
+  },
+  "dependencies": {
+    "elm-format": "^0.8.5"
+  }
+}

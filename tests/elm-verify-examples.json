@@ -1,0 +1,16 @@
+{
+  "root": "../src",
+  "tests": [
+    "OpenAI",
+    "OpenAI.Common",
+    "OpenAI.Completion",
+    "OpenAI.Edits",
+    "OpenAI.Embeddings",
+    "OpenAI.File",
+    "OpenAI.FineTune",
+    "OpenAI.Image",
+    "OpenAI.Internal",
+    "OpenAI.Model",
+    "OpenAI.Moderation"
+  ]
+}

@@ -1,0 +1,7 @@
+module OpenAI.ModelID exposing (..)
+
+{-| This is a placeholder -}
+
+type ModelID = ModelID
+
+stringFromModelID = Debug.todo ""

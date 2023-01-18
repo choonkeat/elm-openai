@@ -1,8 +1,8 @@
 # elm-openai
 
-This is an Elm library for [OpenAI API](https://beta.openai.com/docs/api-reference/introduction).
+This is a community-maintained Elm library for [OpenAI API](https://beta.openai.com/docs/api-reference/introduction).
 
-This package is NOT intended to be run on the browser since `apiKey` will be exposed. Call it from the server-side like [elm-webapp](https://github.com/choonkeat/elm-webapp) or [lamdera.com](https://lamdera.com) instead.
+This package is NOT intended to be run on the browser since `apiKey` will be exposed. Call it from the server-side like [elm-webapp](https://github.com/choonkeat/elm-webapp) or [lamdera.com](https://lamdera.com) instead and have the api key stored in environment variables.
 
 See <https://beta.openai.com/docs/api-reference/introduction>
 
@@ -14,8 +14,8 @@ fixSpelling userInput =
     let
         cfg =
             { organizationId = "org-123"
-            , apiKey = "sk-123"
-            , baseUrl = Nothing -- defaults to "https://api.openai.com/v1"
+            , apiKey = flags.apiKey -- use of environment variables is recommended
+            , baseUrl = Nothing     -- defaults to "https://api.openai.com/v1"
             }
     in
     OpenAI.Edits.createEdits

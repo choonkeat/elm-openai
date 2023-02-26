@@ -98,7 +98,7 @@ type alias Choice =
     { text : String
     , index : Int
     , logprobs : Maybe Logprob
-    , finish_reason : String
+    , finish_reason : Maybe String
     }
 
 
@@ -108,7 +108,7 @@ decodeChoice =
         (Json.Decode.field "text" Json.Decode.string)
         (Json.Decode.field "index" Json.Decode.int)
         (Json.Decode.field "logprobs" (Json.Decode.maybe decodeLogprob))
-        (Json.Decode.field "finish_reason" Json.Decode.string)
+        (Json.Decode.field "finish_reason" (Json.Decode.maybe Json.Decode.string))
 
 
 {-| -}

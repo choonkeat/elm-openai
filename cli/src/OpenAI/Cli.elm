@@ -6,7 +6,6 @@ import Elm.Case
 import Ext.Http
 import Http
 import OpenAI
-import OpenAI.Data
 import OpenAI.Model
 import String.Case
 import Task
@@ -53,6 +52,7 @@ init config =
     , OpenAI.Model.listModels
         |> OpenAI.withConfig config
         |> Http.task
+        |> Task.map (List.sortBy .id)
         |> Task.attempt Done
     )
 

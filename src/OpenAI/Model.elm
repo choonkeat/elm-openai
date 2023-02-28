@@ -23,7 +23,13 @@ import OpenAI.ModelID
 import Time
 
 
-{-| -}
+{-|
+
+> You can refer to the Models documentation to understand what models are available and the differences between them.
+
+<https://platform.openai.com/docs/models>
+
+-}
 type alias Model =
     { id : String
     , object : String

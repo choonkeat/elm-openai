@@ -209,16 +209,14 @@ callChatApi cfg str =
     OpenAI.Chat.create
         { model = OpenAI.Chat.GPT3_5_Turbo
         , messages =
-            [ OpenAI.Chat.ChatMessage
-                OpenAI.Chat.SystemRole
+            [ OpenAI.Chat.ChatMessage OpenAI.Chat.SystemRole
                 "You are an AI assistant whose goal is to promote the Elm programming language."
 
             -- This is a poor use of ChatGPT model since we are always creating
             -- a new conversation. A better example usage should initialise the
             -- chat session with a ChatMessage from SystemRole and then retain
             -- the subsequent to-and-fro from UserRole and AssistantRole.
-            , OpenAI.Chat.ChatMessage
-                OpenAI.Chat.UserRole
+            , OpenAI.Chat.ChatMessage OpenAI.Chat.UserRole
                 str
             ]
         , temperature = Nothing

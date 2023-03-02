@@ -1,4 +1,17 @@
-module OpenAI.Chat exposing (..)
+module OpenAI.Chat exposing
+    ( create
+    , Input, ChatMessage, ChatMessageRole(..), ModelID(..), Output, Choice
+    )
+
+{-| <https://platform.openai.com/docs/api-reference/chat/create>
+
+> Given a chat conversation, the model will return a chat completion response.
+
+@docs create
+
+@docs Input, ChatMessage, ChatMessageRole, ModelID, Output, Choice
+
+-}
 
 import Dict exposing (Dict)
 import Ext.Http
@@ -10,6 +23,7 @@ import OpenAI.Internal exposing (andMap)
 import Time
 
 
+{-| -}
 type ModelID
     = GPT3_5_Turbo
     | GPT3_5_Turbo_0301
@@ -25,6 +39,7 @@ stringFromModelID modelID =
             "gpt-3.5-turbo-0301"
 
 
+{-| -}
 type ChatMessageRole
     = SystemRole
     | UserRole
@@ -74,6 +89,7 @@ decodeChatMessageRole =
             )
 
 
+{-| -}
 type alias ChatMessage =
     { role : ChatMessageRole
     , content : String
@@ -95,7 +111,10 @@ decodeChatMessage =
         |> andMap (Json.Decode.field "content" Json.Decode.string)
 
 
-{-| If `stream` is set to `True`, response will stream back partial progress. If set, tokens will be sent as data-only server-sent events as they become available, with the stream terminated by a `data: [DONE]` message. This is unsupported in this library for now.
+{-| See <https://platform.openai.com/docs/api-reference/chat/create>
+
+If `stream` is set to `True`, response will stream back partial progress. If set, tokens will be sent as data-only server-sent events as they become available, with the stream terminated by a `data: [DONE]` message. This is unsupported in this library for now.
+
 -}
 type alias Input =
     { model : ModelID
@@ -169,6 +188,31 @@ decodeOutput =
         |> andMap (Json.Decode.field "usage" OpenAI.Internal.decodeUsage)
 
 
+{-|
+
+    OpenAI.Chat.create
+        { model = GPT3_5_Turbo
+        , messages =
+            [ ChatMessage SystemRole
+                "You are an AI assistant whose goal is to promote the Elm programming language."
+            , ChatMessage UserRole
+                "What is the best way to learn Elm?"
+            ]
+        , temperature = Nothing
+        , top_p = Nothing
+        , n = Nothing
+        , stream = Nothing
+        , stop = Nothing
+        , max_tokens = Nothing
+        , presence_penalty = Nothing
+        , frequency_penalty = Nothing
+        , logit_bias = Nothing
+        , user = Nothing
+        }
+        |> OpenAI.withConfig cfg
+        |> Http.task
+
+-}
 create : Input -> Ext.Http.TaskInput (Ext.Http.Error String) Output
 create input =
     { method = "POST"

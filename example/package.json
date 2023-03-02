@@ -1,0 +1,21 @@
+{
+  "name": "example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "full-url": "^1.0.0",
+    "node-static": "^0.7.11",
+    "websocket": "^1.0.34",
+    "xhr2": "^0.2.1"
+  },
+  "devDependencies": {
+    "elm-auto-encoder-decoder": "^1.8.1"
+  }
+}

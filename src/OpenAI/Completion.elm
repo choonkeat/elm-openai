@@ -26,7 +26,8 @@ import OpenAI.ModelID
 import Time
 
 
-{-| -}
+{-| If `stream` is set to `True`, partial message deltas will be sent, like in ChatGPT. Tokens will be sent as data-only server-sent events as they become available, with the stream terminated by a `data: [DONE]` message. This is unsupported in this library for now
+-}
 type alias Input =
     { model : OpenAI.ModelID.ModelID
     , prompt : String

@@ -6237,7 +6237,7 @@ var $author$project$Protocol$Auto$encodeProtocolMsgFromClient = function (value)
 var $author$project$Protocol$httpEndpoint = '/api/elm-webapp';
 var $author$project$Client$init = function (flags) {
 	return _Utils_Tuple2(
-		{greeting: '', serverGreeting: ''},
+		{greeting: 'What is a good programming language?', serverGreeting: ''},
 		$elm$core$Platform$Cmd$none);
 };
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
@@ -6363,6 +6363,7 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 			$elm$json$Json$Encode$string(string));
 	});
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
+var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
 var $author$project$Client$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
@@ -6383,7 +6384,8 @@ var $author$project$Client$view = function (model) {
 						$elm$html$Html$input,
 						_List_fromArray(
 							[
-								$elm$html$Html$Events$onInput($author$project$Client$SetGreeting)
+								$elm$html$Html$Events$onInput($author$project$Client$SetGreeting),
+								$elm$html$Html$Attributes$value(model.greeting)
 							]),
 						_List_Nil),
 						A2(

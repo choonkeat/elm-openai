@@ -3,7 +3,7 @@ module Client exposing (..)
 import Browser
 import Browser.Navigation
 import Html exposing (Html, button, div, form, input, text)
-import Html.Attributes exposing (type_)
+import Html.Attributes exposing (type_, value)
 import Html.Events exposing (onClick, onInput, onSubmit)
 import Http
 import Json.Decode
@@ -86,7 +86,7 @@ type Msg
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( { greeting = ""
+    ( { greeting = "What is a good programming language?"
       , serverGreeting = ""
       }
     , Cmd.none
@@ -97,7 +97,7 @@ view : Model -> Html.Html Msg
 view model =
     div []
         [ form [ onSubmit (SendMessage (Protocol.SetGreeting model.greeting)) ]
-            [ input [ onInput SetGreeting ] []
+            [ input [ onInput SetGreeting, value model.greeting ] []
             , button [ type_ "submit" ] [ text "Send to server" ]
             ]
         , if model.serverGreeting == "" then

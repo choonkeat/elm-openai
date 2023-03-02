@@ -13,12 +13,17 @@ const jsSha = hash.digest('hex')
 const { Elm } = require('./build/Server.js')
 var app = Elm.Server.init({
   flags: {
+    openaiConfig: {
+      apiKey: process.env.OPENAI_API_KEY,
+      organizationId: process.env.OPENAI_ORG_ID,
+      baseUrl: process.env.OPENAI_BASE_URL || null
+    },
     assetsHost: process.env.ASSETS_HOST || '',
     jsSha: jsSha
   }
 })
 
-function loggerWith (logger, ...context) {
+function loggerWith(logger, ...context) {
   return function (...messages) {
     logger(context, ...messages)
     /* context is wrapped in [ square brackets ] */

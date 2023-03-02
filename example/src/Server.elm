@@ -1,7 +1,11 @@
 port module Server exposing (..)
 
+import Ext.Http
+import Http
 import Json.Decode
 import Json.Encode
+import OpenAI
+import OpenAI.Chat
 import Platform exposing (Task)
 import Protocol exposing (MsgFromServer)
 import Protocol.Auto
@@ -64,6 +68,7 @@ main =
 type alias Flags =
     { jsSha : Maybe String
     , assetsHost : Maybe String
+    , openaiConfig : OpenAI.Config
     }
 
 
@@ -71,6 +76,7 @@ type alias ServerState =
     { greeting : String
     , jsSha : String
     , assetsHost : String
+    , openaiConfig : OpenAI.Config
     }
 
 
@@ -89,6 +95,7 @@ init flags =
             { greeting = "Hello world"
             , jsSha = Maybe.withDefault "" flags.jsSha
             , assetsHost = Maybe.withDefault "" flags.assetsHost
+            , openaiConfig = flags.openaiConfig
             }
 
         cmd =
@@ -192,8 +199,43 @@ updateFromClient ctx now clientMsg serverState =
 
         Protocol.SetGreeting s ->
             ( { serverState | greeting = s }
-            , Task.succeed (Protocol.CurrentGreeting ("You said: <" ++ s ++ "> at " ++ Debug.toString now))
+            , callChatApi serverState.openaiConfig s
+                |> Task.map Protocol.CurrentGreeting
             )
+
+
+callChatApi : OpenAI.Config -> String -> Task String String
+callChatApi cfg str =
+    OpenAI.Chat.create
+        { model = OpenAI.Chat.GPT3_5_Turbo
+        , messages =
+            [ OpenAI.Chat.ChatMessage
+                OpenAI.Chat.SystemRole
+                "You are an AI assistant whose goal is to promote the Elm programming language."
+
+            -- This is a poor use of ChatGPT model since we are always creating
+            -- a new conversation. A better example usage should initialise the
+            -- chat session with a ChatMessage from SystemRole and then retain
+            -- the subsequent to-and-fro from UserRole and AssistantRole.
+            , OpenAI.Chat.ChatMessage
+                OpenAI.Chat.UserRole
+                str
+            ]
+        , temperature = Nothing
+        , top_p = Nothing
+        , n = Nothing
+        , stream = Nothing
+        , stop = Nothing
+        , max_tokens = Nothing
+        , presence_penalty = Nothing
+        , frequency_penalty = Nothing
+        , logit_bias = Nothing
+        , user = Nothing
+        }
+        |> OpenAI.withConfig cfg
+        |> Http.task
+        |> Task.mapError Ext.Http.errorString
+        |> Task.map Debug.toString
 
 
 

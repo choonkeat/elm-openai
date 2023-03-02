@@ -107,17 +107,17 @@ decodeOutput =
         }
         |> OpenAI.withConfig cfg
         |> Http.task
-    --> Task.succeed
-    -->     { data =
-    -->         [ { embedding = [0.0023064255,-0.009327292,...,-0.0028842222 ]
-    -->           , index = 0
-    -->           , object = "embedding"
-    -->           }
-    -->         ]
-    -->     , model = Custom "text-embedding-ada-002-v2"
-    -->     , object = "list"
-    -->     , usage = { prompt_tokens = 8, total_tokens = 8 }
-    -->     }
+    -- > Task.succeed
+    -- >     { data =
+    -- >         [ { embedding = [0.0023064255,-0.009327292,...,-0.0028842222 ]
+    -- >           , index = 0
+    -- >           , object = "embedding"
+    -- >           }
+    -- >         ]
+    -- >     , model = Custom "text-embedding-ada-002-v2"
+    -- >     , object = "list"
+    -- >     , usage = { prompt_tokens = 8, total_tokens = 8 }
+    -- >     }
 
 -}
 create : Input -> Ext.Http.TaskInput (Ext.Http.Error String) Output

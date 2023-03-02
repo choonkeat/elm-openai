@@ -144,16 +144,16 @@ decodeModeration =
         }
         |> OpenAI.withConfig cfg
         |> Http.task
-    --> Task.succeed
-    -->     { id = "modr-6a5SyUXa0D954a3h9hHi737O8vtM3"
-    -->     , model = Custom "text-moderation-004"
-    -->     , results =
-    -->         [ { categories = { hate = False, hate_threatening = False, self_harm = False, sexual = False, sexual_minors = False, violence = False, violence_graphic = False }
-    -->           , category_scores = { hate = 0.000005618692284770077, hate_threatening = 7.34394856038989e-9, self_harm = 1.334657184770549e-7, sexual = 0.001665698830038309, sexual_minors = 7.969669013618841e-7, violence = 0.000050713490054477006, violence_graphic = 4.190181073226995e-7 }
-    -->           , flagged = False
-    -->           }
-    -->         ]
-    -->     }
+    -- > Task.succeed
+    -- >     { id = "modr-6a5SyUXa0D954a3h9hHi737O8vtM3"
+    -- >     , model = Custom "text-moderation-004"
+    -- >     , results =
+    -- >         [ { categories = { hate = False, hate_threatening = False, self_harm = False, sexual = False, sexual_minors = False, violence = False, violence_graphic = False }
+    -- >           , category_scores = { hate = 0.000005618692284770077, hate_threatening = 7.34394856038989e-9, self_harm = 1.334657184770549e-7, sexual = 0.001665698830038309, sexual_minors = 7.969669013618841e-7, violence = 0.000050713490054477006, violence_graphic = 4.190181073226995e-7 }
+    -- >           , flagged = False
+    -- >           }
+    -- >         ]
+    -- >     }
 
 -}
 create : Input -> Ext.Http.TaskInput (Ext.Http.Error String) Output

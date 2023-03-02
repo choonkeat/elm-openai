@@ -94,15 +94,15 @@ decodeChoice =
         }
         |> OpenAI.withConfig cfg
         |> Http.task
-    --> Task.succeed
-    -->     { choices =
-    -->         [ { index = 0, text = "The quick brown fox jumps over the lazy dog.\nOne day she was on the roof\nLooking for one thing that the the chicken stole.\nIt was long green and has a big nose.\n" }
-    -->         , { index = 1, text = "The quick brown fox jumps over the lazy dog. I am going to Germany tonight.\n" }
-    -->         ]
-    -->     , created = Posix ...
-    -->     , object = "edit"
-    -->     , usage = { completion_tokens = 79, prompt_tokens = 27, total_tokens = 106 }
-    -->     }
+    -- > Task.succeed
+    -- >     { choices =
+    -- >         [ { index = 0, text = "The quick brown fox jumps over the lazy dog.\nOne day she was on the roof\nLooking for one thing that the the chicken stole.\nIt was long green and has a big nose.\n" }
+    -- >         , { index = 1, text = "The quick brown fox jumps over the lazy dog. I am going to Germany tonight.\n" }
+    -- >         ]
+    -- >     , created = Posix ...
+    -- >     , object = "edit"
+    -- >     , usage = { completion_tokens = 79, prompt_tokens = 27, total_tokens = 106 }
+    -- >     }
 
 -}
 create : Input -> Ext.Http.TaskInput (Ext.Http.Error String) Output

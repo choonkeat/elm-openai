@@ -152,25 +152,25 @@ decodeLogprob =
         }
         |> OpenAI.withConfig cfg
         |> Http.task
-    --> Task.succeed
-    -->     { choices =
-    -->         [ { finish_reason = "length"
-    -->           , index = 0
-    -->           , logprobs = Nothing
-    -->           , text = "\n\nIf I were a farmer's son
-    -->           , I would rise early each morning"
-    -->           }
-    -->         ]
-    -->     , created = Posix ...
-    -->     , id = "cmpl-..."
-    -->     , model = TextDavinci003
-    -->     , object = "text_completion"
-    -->     , usage =
-    -->         { completion_tokens = 16
-    -->         , prompt_tokens = 7
-    -->         , total_tokens = 23
-    -->         }
-    -->     }
+    -- > Task.succeed
+    -- >     { choices =
+    -- >         [ { finish_reason = "length"
+    -- >           , index = 0
+    -- >           , logprobs = Nothing
+    -- >           , text = "\n\nIf I were a farmer's son
+    -- >           , I would rise early each morning"
+    -- >           }
+    -- >         ]
+    -- >     , created = Posix ...
+    -- >     , id = "cmpl-..."
+    -- >     , model = TextDavinci003
+    -- >     , object = "text_completion"
+    -- >     , usage =
+    -- >         { completion_tokens = 16
+    -- >         , prompt_tokens = 7
+    -- >         , total_tokens = 23
+    -- >         }
+    -- >     }
 
 -}
 create : Input -> Ext.Http.TaskInput (Ext.Http.Error String) Output

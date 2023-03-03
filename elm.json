@@ -3,7 +3,7 @@
     "name": "choonkeat/elm-openai",
     "summary": "OpenAI API for Elm",
     "license": "BSD-3-Clause",
-    "version": "2.1.0",
+    "version": "3.0.0",
     "exposed-modules": [
         "OpenAI",
         "OpenAI.Audio",

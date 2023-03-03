@@ -1,5 +1,6 @@
 build
 elm-stuff
 node_modules
+generated-src
 tests/VerifyExamples
 example/public/assets/client.js

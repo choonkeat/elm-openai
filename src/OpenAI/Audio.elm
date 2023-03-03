@@ -12,9 +12,10 @@ module OpenAI.Audio exposing
 -}
 
 import Ext.Http
+import File
 import Http
 import Json.Decode
-import Json.Encode
+import OpenAI.Common
 import OpenAI.Internal exposing (andMap)
 
 
@@ -66,7 +67,7 @@ stringFromResponseFormat responseFormat =
 
 -}
 type alias TranscriptionInput =
-    { file : String
+    { file : File.File
     , model : Model
     , prompt : Maybe String
     , response_format : Maybe ResponseFormat
@@ -75,18 +76,16 @@ type alias TranscriptionInput =
     }
 
 
-encodeTranscriptionInput : TranscriptionInput -> Json.Encode.Value
-encodeTranscriptionInput input =
-    Json.Encode.object
-        (List.filterMap identity
-            [ Just ( "file", Json.Encode.string input.file )
-            , Just ( "model", Json.Encode.string (stringFromModel input.model) )
-            , Maybe.map (\a -> ( "prompt", Json.Encode.string a )) input.prompt
-            , Maybe.map (\a -> ( "response_format", Json.Encode.string (stringFromResponseFormat a) )) input.response_format
-            , Maybe.map (\a -> ( "temperature", Json.Encode.float a )) input.temperature
-            , Maybe.map (\a -> ( "language", Json.Encode.string a )) input.language
-            ]
-        )
+formEncodeTranscriptionInput : TranscriptionInput -> List Http.Part
+formEncodeTranscriptionInput input =
+    List.filterMap identity
+        [ Just (Http.stringPart "model" (stringFromModel input.model))
+        , Just (Http.filePart "file" input.file)
+        , Maybe.map (\a -> Http.stringPart "prompt" a) input.prompt
+        , Maybe.map (\a -> Http.stringPart "response_format" (stringFromResponseFormat a)) input.response_format
+        , Maybe.map (\a -> Http.stringPart "temperature" (String.fromFloat a)) input.temperature
+        , Maybe.map (\a -> Http.stringPart "language" a) input.language
+        ]
 
 
 {-| -}
@@ -108,7 +107,7 @@ createTranscription input =
     { method = "POST"
     , headers = []
     , url = "/audio/transcriptions"
-    , body = Http.jsonBody (encodeTranscriptionInput input)
+    , body = Http.multipartBody (formEncodeTranscriptionInput input)
     , resolver =
         Http.stringResolver
             (Ext.Http.jsonResolver decodeOutput >> Result.map .data)
@@ -118,7 +117,7 @@ createTranscription input =
 
 {-| -}
 type alias TranslationInput =
-    { file : String
+    { file : File.File
     , model : Model
     , prompt : Maybe String
     , response_format : Maybe ResponseFormat
@@ -126,17 +125,15 @@ type alias TranslationInput =
     }
 
 
-encodeTranslationInput : TranslationInput -> Json.Encode.Value
-encodeTranslationInput input =
-    Json.Encode.object
-        (List.filterMap identity
-            [ Just ( "file", Json.Encode.string input.file )
-            , Just ( "model", Json.Encode.string (stringFromModel input.model) )
-            , Maybe.map (\a -> ( "prompt", Json.Encode.string a )) input.prompt
-            , Maybe.map (\a -> ( "response_format", Json.Encode.string (stringFromResponseFormat a) )) input.response_format
-            , Maybe.map (\a -> ( "temperature", Json.Encode.float a )) input.temperature
-            ]
-        )
+formEncodeTranslationInput : TranslationInput -> List Http.Part
+formEncodeTranslationInput input =
+    List.filterMap identity
+        [ Just (Http.stringPart "model" (stringFromModel input.model))
+        , Just (Http.filePart "file" input.file)
+        , Maybe.map (\a -> Http.stringPart "prompt" a) input.prompt
+        , Maybe.map (\a -> Http.stringPart "response_format" (stringFromResponseFormat a)) input.response_format
+        , Maybe.map (\a -> Http.stringPart "temperature" (String.fromFloat a)) input.temperature
+        ]
 
 
 {-| <https://platform.openai.com/docs/api-reference/audio/create>
@@ -146,7 +143,7 @@ createTranslation input =
     { method = "POST"
     , headers = []
     , url = "/audio/translations"
-    , body = Http.jsonBody (encodeTranslationInput input)
+    , body = Http.multipartBody (formEncodeTranslationInput input)
     , resolver =
         Http.stringResolver
             (Ext.Http.jsonResolver decodeOutput >> Result.map .data)

@@ -1,7 +1,7 @@
 module Protocol exposing (..)
 
-import Json.Decode
 import Json.Encode
+import OpenAI.Common
 
 
 {-| Url path that Client sends MsgFromClient values to
@@ -16,6 +16,8 @@ httpEndpoint =
 type MsgFromClient
     = ManyMsgFromClient (List MsgFromClient)
     | SetGreeting String
+    | GetOpenAIFiles
+    | DeleteFileById String
 
 
 {-| All messages that Server can reply to Client
@@ -24,6 +26,7 @@ type MsgFromServer
     = ManyMsgFromServer (List MsgFromServer)
     | ClientServerVersionMismatch Json.Encode.Value
     | CurrentGreeting String
+    | GotOpenAIFiles (List OpenAI.Common.File)
 
 
 {-| Http headers will be parsed into a RequestContext

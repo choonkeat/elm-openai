@@ -6,6 +6,8 @@ import Json.Decode
 import Json.Encode
 import OpenAI
 import OpenAI.Chat
+import OpenAI.Common
+import OpenAI.File
 import Platform exposing (Task)
 import Protocol exposing (MsgFromServer)
 import Protocol.Auto
@@ -150,7 +152,7 @@ updateFromRoute ( method, ctx, route ) now request serverState =
             , writeResponse request
                 { statusCode = StatusOK
                 , body =
-                    spaHtml
+                    spaHtml { openaiConfig = serverState.openaiConfig }
                         |> String.replace "JS_SHA" serverState.jsSha
                         |> String.replace """"/assets""" ("\"" ++ serverState.assetsHost ++ "/assets")
                 , headers =
@@ -203,6 +205,30 @@ updateFromClient ctx now clientMsg serverState =
                 |> Task.map Protocol.CurrentGreeting
             )
 
+        Protocol.GetOpenAIFiles ->
+            ( serverState
+            , OpenAI.File.getFiles
+                |> OpenAI.withConfig serverState.openaiConfig
+                |> Http.task
+                |> Task.mapError Ext.Http.errorString
+                |> Task.map Protocol.GotOpenAIFiles
+            )
+
+        Protocol.DeleteFileById id ->
+            ( serverState
+            , OpenAI.File.deleteFile { file_id = id }
+                |> OpenAI.withConfig serverState.openaiConfig
+                |> Http.task
+                |> Task.andThen
+                    (\_ ->
+                        OpenAI.File.getFiles
+                            |> OpenAI.withConfig serverState.openaiConfig
+                            |> Http.task
+                    )
+                |> Task.mapError Ext.Http.errorString
+                |> Task.map Protocol.GotOpenAIFiles
+            )
+
 
 callChatApi : OpenAI.Config -> String -> Task String String
 callChatApi cfg str =
@@ -248,8 +274,25 @@ headerDecoder now serverState =
         ]
 
 
-spaHtml : String
-spaHtml =
+spaHtml : { openaiConfig : OpenAI.Config } -> String
+spaHtml flags =
+    let
+        encodedFlags =
+            Json.Encode.object
+                [ ( "openaiConfig"
+                  , Json.Encode.object
+                        [ ( "organizationId", Json.Encode.string flags.openaiConfig.organizationId )
+                        , ( "apiKey", Json.Encode.string flags.openaiConfig.apiKey )
+                        , case flags.openaiConfig.baseUrl of
+                            Just a ->
+                                ( "baseUrl", Json.Encode.string a )
+
+                            Nothing ->
+                                ( "baseUrl", Json.Encode.null )
+                        ]
+                  )
+                ]
+    in
     """
     <!DOCTYPE HTML>
     <html>
@@ -258,6 +301,12 @@ spaHtml =
       <title>create-elm-server</title>
       <script src="/assets/client.js?JS_SHA"></script>
       <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+      <style>
+        pre {
+          white-space: pre-wrap;
+          word-wrap: break-word;
+        }
+      </style>
     </head>
     <body>
     <div id="elm"></div>
@@ -265,7 +314,7 @@ spaHtml =
     var now = new Date()
     var app = Elm.Client.init({
       node: document.getElementById('elm'),
-      flags: {}
+      flags: """ ++ Json.Encode.encode 0 encodedFlags ++ """
     });
 
     if (window.WebSocket && app.ports && app.ports.websocketOut) {

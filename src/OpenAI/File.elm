@@ -18,6 +18,7 @@ See <https://beta.openai.com/docs/api-reference/files>
 import Bytes exposing (Bytes)
 import Dict
 import Ext.Http
+import File
 import Http
 import Json.Decode
 import Json.Encode
@@ -29,13 +30,18 @@ import OpenAI.Internal
 -}
 getFiles : Ext.Http.TaskInput (Ext.Http.Error String) (List OpenAI.Common.File)
 getFiles =
+    let
+        decoder =
+            Json.Decode.field "data"
+                (Json.Decode.list OpenAI.Internal.decodeFile)
+    in
     { method = "GET"
     , headers = []
     , url = "/files"
     , body = Http.emptyBody
     , resolver =
         Http.stringResolver
-            (Ext.Http.jsonResolver (Json.Decode.list OpenAI.Internal.decodeFile) >> Result.map .data)
+            (Ext.Http.jsonResolver decoder >> Result.map .data)
     , timeout = Nothing
     }
 
@@ -53,10 +59,14 @@ encodePromptCompletion input =
         ]
 
 
-{-| -}
+{-| `FilePurposeGeneral`
+
+  - `String` refers to purpose and should be `"fine-tune"` though. Other values seem to fail. See <https://platform.openai.com/docs/api-reference/files/upload#files/upload-purpose>
+
+-}
 type UploadInput
     = FilePurposeFineTune (List PromptCompletion)
-    | FilePurposeGeneral String OpenAI.Common.BinaryBlob
+    | FilePurposeGeneral String File.File
 
 
 formEncodeUploadInput : UploadInput -> List Http.Part
@@ -68,9 +78,9 @@ formEncodeUploadInput input =
                 (Json.Encode.encode 0 (Json.Encode.list encodePromptCompletion promptCompletions))
             ]
 
-        FilePurposeGeneral purpose blob ->
+        FilePurposeGeneral purpose file ->
             [ Http.stringPart "purpose" purpose
-            , Http.bytesPart "file" blob.contentType blob.bytes
+            , Http.filePart "file" file
             ]
 
 
